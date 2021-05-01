@@ -1,0 +1,102 @@
+1.
+SELECT me.student_id,   
+	CONCAT(me.lname, ', ', me.fname) AS 'Name',   
+      CONCAT(ad.lname, ', ', ad.fname) AS 'Advisor' ,
+      sc.organization,
+      sc.amount,
+      sc.semester,
+      sc.year
+     
+     
+     FROM Members me  
+     
+
+      
+      JOIN scholarships_students ss 
+      ON ss.student_id = me.student_id  
+     
+     JOIN scholarships sc 
+      ON   ss.scholarship_id = sc.scholarship_id  
+      
+      JOIN advisors ad 
+      ON  me.advisor_id = ad.advisor_id
+
+
+/*where me.advisor_id >0
+AND sc.scholarship_id LIKE 'S%'*/
+
+order by ad.lname, organization, me.lname
+
+2.
+SELECT 
+COALESCE(CONCAT(ad.lname, ', ', ad.fname),'[No Advisor]') AS 'Advisor',
+/*(me.student_id,
+ sc.amount,*/
+  SUM(amount)as 'Total Awarded',
+  count(amount) as 'Count'
+ FROM members me     
+
+      
+       JOIN scholarships_students ss 
+      ON ss.student_id = me.student_id  
+     
+      JOIN scholarships sc 
+      ON   ss.scholarship_id = sc.scholarship_id  
+      
+     LEFT  JOIN advisors ad 
+      ON  me.advisor_id = ad.advisor_id
+
+group by advisor
+order by SUM(amount) desc
+3.
+SELECT 
+CONCAT(me.lname, ', ', me.fname) AS 'Student',
+me.birth_date as "Date of Birth",
+CONCAT(ad.lname, ', ', ad.fname) AS 'Advisor',
+organization
+
+from college.members me
+
+      
+       JOIN scholarships_students ss 
+      ON ss.student_id = me.student_id  
+     
+      JOIN scholarships sc 
+      ON   ss.scholarship_id = sc.scholarship_id  
+      
+      LEFT JOIN advisors ad 
+      ON  me.advisor_id = ad.advisor_id
+
+WHERE me.birth_date < '1990-01-01'
+
+4.
+SELECT 
+CONCAT(me.lname, ', ', me.fname) AS 'Student',
+me.city,
+me.state,
+wc.Population
+
+
+
+
+from members me
+
+      
+	  left jOIN scholarships_students ss 
+      ON ss.student_id = me.student_id  
+     
+      left JOIN scholarships sc 
+      ON   ss.scholarship_id = sc.scholarship_id  
+      
+      LEFT JOIN advisors ad 
+      ON  me.advisor_id = ad.advisor_id
+      
+      LEFT JOIN world.city wc
+      ON  wc.Name = me.city
+      
+    order by Population desc, me.city
+5.
+Explain in your own words when you would use an inner join and when you would use a left join. (What is the difference)
+
+An inner join will exclude rows that  are null in either of the keys columns in the ON clause.
+A left join will not exclude any rows even if the joining row is NULL in it's key column. I left the previous question's join statements in my solution to question 4 because they do not affect the result grid.
